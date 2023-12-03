@@ -1,0 +1,527 @@
+<!-- modeling_result.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Sesuaikan bagian ini sesuai kebutuhan -->
+    <meta charset="UTF-8" />
+    <title>Modeling and Testing</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+      #back-to-top {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 50%;
+      }
+
+      #back-to-top:hover {
+        background-color: #0056b3;
+      }
+
+      #back-to-top i {
+        font-size: 20px; /* Sesuaikan ukuran ikon */
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <a href="/modeling" class="btn btn-danger mb-3">Clear Page</a>
+    </div>
+    <button onclick="topFunction()" id="back-to-top" title="Go to top">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <div class="container mt-4">
+      <h2>Data Modeling</h2>
+
+      <div
+        class="table-responsive mt-4"
+        style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+      >
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Positive</th>
+              <th>Negative</th>
+              <th>Total</th>
+              <th>Total test</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ positive_count }}</td>
+              <td>{{ negative_count }}</td>
+              <td>{{ total }}</td>
+              <td>{{ total_test}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Comments - Data Training -->
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <h3>Comments - Data Training</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <!-- Table headers -->
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th>Nomor</th>
+                  <th>Nama Akun</th>
+                  <th>Komentar</th>
+                  <th>Label</th>
+                </tr>
+              </thead>
+              <!-- Table body -->
+              <tbody>
+                {% for row in data %}
+                <tr>
+                  <td>{{ row['nomor'] }}</td>
+                  <td>{{ row['nama_akun'] }}</td>
+                  <td>{{ row['komentar_preprocessing'] }}</td>
+                  <td>{{ row['label'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Comments - Data Testing -->
+        <div class="col-md-6">
+          <h3>Comments - Data Testing</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <!-- Table headers -->
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th>Nomor</th>
+                  <th>Nama Akun</th>
+                  <th>Komentar</th>
+                  <th>Label</th>
+                </tr>
+              </thead>
+              <!-- Table body -->
+              <tbody>
+                {% for row in data_testing %}
+                <tr>
+                  <td>{{ row['nomor'] }}</td>
+                  <td>{{ row['nama_akun'] }}</td>
+                  <td>{{ row['komentar_preprocessing'] }}</td>
+                  <td>{{ row['label'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Word Frequency (Count Vectorizer) - Data Training -->
+
+      <!-- <div class="row">
+        <div class="col-md-6">
+          <h3>Word Frequency (Count Vectorizer) - Data Training</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th
+                    style="position: sticky; left: 0; background-color: white"
+                  >
+                    Komentar
+                  </th>
+                  {% for word in word_frequency_matrix_training.columns %}
+                  <th>{{ word }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in range(min_length_training) %}
+                <tr>
+                  <td
+                    style="position: sticky; left: 0; background-color: white"
+                  >
+                    Komentar-{{ data[i]['nomor'] }}
+                  </td>
+                  {% for word in word_frequency_matrix_training.iloc[i] %}
+                  <td>{{ word }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h3>Word Frequency (Count Vectorizer) - Data Testing</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th
+                    style="position: sticky; left: 0; background-color: white"
+                  >
+                    Komentar (Testing)
+                  </th>
+                  {% for word in word_frequency_matrix_testing.columns %}
+                  <th>{{ word }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in range(min_length_testing) %}
+                <tr>
+                  <td
+                    style="position: sticky; left: 0; background-color: white"
+                  >
+                    Komentar-{{ data_testing[i]['nomor'] }} (Testing)
+                  </td>
+                  {% for word in word_frequency_matrix_testing.iloc[i] %}
+                  <td>{{ word }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <h3>Euclidean Distance</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th>Nomor</th>
+                  <th>Nearest Training Data</th>
+                  <th>Distance</th>
+                  <th>Komentar Training</th>
+                  <th>Action</th>
+                  <!-- New column for the button -->
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in range(data_testing|length) %}
+                <tr>
+                  <td>{{ data_testing[i]['nomor'] }}</td>
+                  {% if matching_indices[i]|length %} {% for idx in
+                  matching_indices[i][:1] %}
+                  <td>{{ data_training[idx]['nomor'] }}</td>
+                  <!-- Ubah bagian ini pada template Anda -->
+                  <td>{{ '%.2f'|format(euclidean_distance[i][idx]) }}</td>
+                  <td>{{ data_training[idx]['komentar_preprocessing'] }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm"
+                      data-toggle="modal"
+                      data-target="#detailModal{{ i }}"
+                    >
+                      Detail
+                    </button>
+                    <!-- Modal -->
+                    <!-- Modal -->
+                    <div
+                      class="modal fade"
+                      id="detailModal{{ i }}"
+                      tabindex="-1"
+                      role="dialog"
+                      aria-labelledby="exampleModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div class="modal-dialog modal-lg" role="document">
+                        <!-- Use modal-lg class to enlarge the modal -->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                              Neighbor Details
+                            </h5>
+                            <button
+                              type="button"
+                              class="close"
+                              data-dismiss="modal"
+                              aria-label="Close"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div
+                            class="modal-body"
+                            style="max-height: 500px; overflow-y: auto"
+                          >
+                            <!-- Set max-height and overflow for scrolling -->
+                            <h6>Details for Nearest Training Data</h6>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Nomor</th>
+                                  <th>Distance</th>
+                                  <th>Komentar Training</th>
+                                  <th>Neighbor Label</th>
+                                  <!-- Added column for Neighbor Label -->
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for idx in matching_indices[i] %}
+                                <tr>
+                                  <td>{{ data_training[idx]['nomor'] }}</td>
+                                  <td>
+                                    {{ '%.2f'|format(euclidean_distance[i][idx])
+                                    }}
+                                  </td>
+                                  <td>
+                                    {{
+                                    data_training[idx]['komentar_preprocessing']
+                                    }}
+                                  </td>
+                                  <td>{{ data_training[idx]['label'] }}</td>
+                                  <!-- Displaying the neighbor label -->
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  {% endfor %} {% else %}
+                  <td colspan="5">No matching training data</td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h3>Predicted Labels for Testing Data</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 500px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-striped">
+              <thead style="position: sticky; top: 0; background-color: white">
+                <tr>
+                  <th>Nomor</th>
+                  <th>Actual Label</th>
+                  <th>Predicted Label</th>
+                  <th>Komentar Testing</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in range(min_length_testing) %}
+                <tr>
+                  <td>{{ data_testing[i]['nomor'] }}</td>
+                  <td>{{ data_testing[i]['label'] }}</td>
+                  <td>{{ predicted_labels[i] }}</td>
+                  <td>{{ data_testing[i]['komentar_preprocessing'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Confusion Matrix</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 300px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Actual / Predicted</th>
+                  <th>Positive</th>
+                  <th>Negative</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Positive</th>
+                  <td>{{ confusion_matrix[0][0] }}</td>
+                  <td>{{ confusion_matrix[0][1] }}</td>
+                </tr>
+                <tr>
+                  <th>Negative</th>
+                  <td>{{ confusion_matrix[1][0] }}</td>
+                  <td>{{ confusion_matrix[1][1] }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h3>Performance Metrics</h3>
+          <div
+            class="table-responsive mt-4"
+            style="max-height: 300px; overflow-y: auto; margin-bottom: 100px"
+          >
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Accuracy</th>
+                  <td>{{ accuracy_percentage|round(2) }}%</td>
+                </tr>
+                <tr>
+                  <th>Precision</th>
+                  <td>{{ precision|round(2) }}%</td>
+                </tr>
+                <tr>
+                  <th>Recall</th>
+                  <td>{{ recall|round(2) }}%</td>
+                </tr>
+                <tr>
+                  <th>F1-Score</th>
+                  <td>{{ f1_score|round(2) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-6 chart-column">
+          <img
+            src="{{ url_for('static', filename='label_chart.png') }}"
+            alt="Label Chart"
+          />
+        </div>
+        <div class="col-md-6 chart-column">
+          <img
+            src="{{ url_for('static', filename='pie_chart.png') }}"
+            alt="Comparison Chart"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Show or hide the Back to Top button based on scroll position
+      window.onscroll = function () {
+        scrollFunction();
+      };
+
+      function scrollFunction() {
+        var backButton = document.getElementById("back-to-top");
+
+        // Show the button when user scrolls down 20px from the top of the document
+        if (
+          document.body.scrollTop > 20 ||
+          document.documentElement.scrollTop > 20
+        ) {
+          backButton.style.display = "block";
+        } else {
+          backButton.style.display = "none";
+        }
+      }
+
+      // Function to scroll back to the top of the document
+      function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      }
+    </script>
+  </body>
+</html>

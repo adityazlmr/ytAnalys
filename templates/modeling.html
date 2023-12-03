@@ -1,0 +1,96 @@
+<!-- modeling.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Sesuaikan bagian ini sesuai kebutuhan -->
+    <meta charset="UTF-8" />
+    <title>Modeling and Testing</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h2>Modeling</h2>
+      <form
+        action="{{ url_for('modeling_route') }}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group">
+          <label for="file_training">Upload Training CSV File:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="file_training"
+            name="file_training"
+            accept=".csv"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="file_testing">Upload Testing CSV File:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="file_testing"
+            name="file_testing"
+            accept=".csv"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary" name="analyze">
+          Analyze
+        </button>
+      </form>
+    </div>
+
+    <!-- Load Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

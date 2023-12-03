@@ -1,0 +1,81 @@
+<!-- split.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Data Splitting</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h2>Split Data</h2>
+      <form
+        action="{{ url_for('split') }}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="form-group">
+          <label for="csvFile">Upload Labeled CSV File:</label>
+          <input
+            type="file"
+            class="form-control-file"
+            id="csvFile"
+            name="file"
+            accept=".csv"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Split Data</button>
+      </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

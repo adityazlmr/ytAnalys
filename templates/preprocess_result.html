@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Comment Preprocessing Result</title>
+    <!-- Load Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+
+      #back-to-top {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99;
+        border: none;
+        outline: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 50%;
+      }
+
+      #back-to-top:hover {
+        background-color: #0056b3;
+      }
+
+      #back-to-top i {
+        font-size: 20px; /* Sesuaikan ukuran ikon */
+      }
+      .table-responsive {
+        max-height: 70vh; /* Atur tinggi maksimum yang diinginkan */
+        overflow-y: auto; /* Biarkan konten dapat discroll secara vertikal */
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container mt-4">
+      <h2>Preprocessing Result</h2>
+      <a href="{{ url_for('label') }}" class="btn btn-primary mb-3"
+        >Label Comments</a
+      >
+      <a
+        href="{{ url_for('download_preprocessed_csv') }}"
+        class="btn btn-success mb-3"
+        >Download Preprocessed CSV</a
+      >
+      <a href="/preprocess" class="btn btn-danger mb-3">Clear Page</a>
+      <button onclick="topFunction()" id="back-to-top" title="Go to top">
+        <i class="fas fa-chevron-up"></i>
+      </button>
+
+      <!-- Number of rows before and after preprocessing -->
+      <p>
+        Number of rows before preprocessing: {{ rows_before_preprocessing }}
+      </p>
+      <p>Number of rows after preprocessing: {{ rows_after_preprocessing }}</p>
+
+      <div class="table-responsive" style="max-height: 600px; overflow-y: auto">
+        <table class="table table-striped table-bordered mt-4">
+          <thead
+            style="
+              position: sticky;
+              top: 0;
+              background-color: white;
+              z-index: 1;
+            "
+          >
+            <tr>
+              <th style="width: 5%">Nomor</th>
+              <th style="width: 15%">Nama Akun</th>
+              <th style="width: 20%">Tanggal Komentar</th>
+              <th style="width: 25%">Komentar</th>
+              <th style="width: 35%">Komentar Preprocessing</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in data %}
+            <tr>
+              <td>{{ row['nomor'] }}</td>
+              <td>{{ row['nama_akun'] }}</td>
+              <td>{{ row['tanggal_komentar'] }}</td>
+              <td
+                style="
+                  max-width: 200px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                "
+              >
+                {{ row['komentar'] }}
+              </td>
+              <td
+                style="
+                  max-width: 350px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                "
+              >
+                {{ row['komentar_preprocessing'] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <button onclick="topFunction()" id="back-to-top" title="Go to top">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Load Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Show or hide the Back to Top button based on scroll position
+      window.onscroll = function () {
+        scrollFunction();
+      };
+
+      function scrollFunction() {
+        var backButton = document.getElementById("back-to-top");
+
+        // Show the button when user scrolls down 20px from the top of the document
+        if (
+          document.body.scrollTop > 20 ||
+          document.documentElement.scrollTop > 20
+        ) {
+          backButton.style.display = "block";
+        } else {
+          backButton.style.display = "none";
+        }
+      }
+
+      // Function to scroll back to the top of the document
+      function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      }
+    </script>
+  </body>
+</html>

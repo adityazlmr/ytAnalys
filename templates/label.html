@@ -1,0 +1,181 @@
+<!-- label.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Manual Labeling</title>
+    <!-- Load Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h2>Label Comments</h2>
+      <form
+        id="labelForm"
+        action="{{ url_for('label_comments') }}"
+        method="POST"
+      >
+        <input
+          type="hidden"
+          name="file_path"
+          value="{{ preprocessed_file_path }}"
+        />
+        <div
+          class="table-responsive"
+          style="max-height: 700px; overflow-y: auto"
+        >
+          <table class="table table-striped mt-4">
+            <thead
+              style="
+                position: sticky;
+                top: 0;
+                background-color: white;
+                z-index: 1;
+              "
+            >
+              <tr>
+                <th style="width: 5%">Nomor</th>
+                <th style="width: 15%">Nama Akun</th>
+                <th style="width: 20%">Tanggal Komentar</th>
+                <th style="width: 20%">Komentar</th>
+                <th style="width: 30%">Komentar Preprocessing</th>
+                <th style="width: 10%">Label</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in data %}
+              <tr>
+                <td>{{ row['nomor'] }}</td>
+                <td>{{ row['nama_akun'] }}</td>
+                <td>{{ row['tanggal_komentar'] }}</td>
+                <td
+                  style="
+                    max-width: 200px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ row['komentar'] }}
+                </td>
+                <td
+                  style="
+                    max-width: 300px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ row['komentar_preprocessing'] }}
+                </td>
+                <td>
+                  <select name="label_{{ loop.index }}" class="form-select">
+                    <option value="" selected disabled>Pilih Label</option>
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                  </select>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div style="text-align: right; margin-top: 20px">
+          <input
+            type="button"
+            value="Submit"
+            class="btn btn-success"
+            onclick="validateForm()"
+          />
+        </div>
+      </form>
+
+      <div
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+        id="alertMessage"
+        style="display: none"
+      >
+        Please select a label before submitting the form.
+      </div>
+
+      <script>
+        function validateForm() {
+          var dropdowns = document.querySelectorAll(".form-select");
+          var isAnyDropdownEmpty = false;
+
+          dropdowns.forEach(function (dropdown) {
+            if (dropdown.value === "") {
+              isAnyDropdownEmpty = true;
+            }
+          });
+
+          var alertMessage = document.getElementById("alertMessage");
+          if (isAnyDropdownEmpty) {
+            alertMessage.style.display = "block";
+          } else {
+            alertMessage.style.display = "none"; // Sembunyikan notifikasi saat semua dropdown sudah dipilih
+            document.getElementById("labelForm").submit();
+          }
+        }
+
+        // Tambahkan event listener untuk menyembunyikan notifikasi saat dropdown dipilih
+        var selects = document.querySelectorAll(".form-select");
+        selects.forEach(function (select) {
+          select.addEventListener("change", function () {
+            var alertMessage = document.getElementById("alertMessage");
+            alertMessage.style.display = "none"; // Sembunyikan notifikasi saat dropdown dipilih
+          });
+        });
+      </script>
+    </div>
+
+    <!-- Load Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

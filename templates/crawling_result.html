@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>YouTube Comment Results</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar {
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      .navbar-nav .nav-item {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">YouTube Sentiment Analysis</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="/crawling">Crawling</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/preprocess">Preprocessing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/split">Split Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/modeling">Modeling</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container mt-4">
+      <h2>YouTube Comment Results</h2>
+      <h5>Video Title: {{ video_title }}</h5>
+      <h5>Channel: {{ channel_title }}</h5>
+      <a href="/download_csv" class="btn btn-success mb-3">Download CSV</a>
+      <a href="/crawling" class="btn btn-danger mb-3">Clear Page</a>
+      <div
+        class="table-responsive mt-4"
+        style="max-height: 600px; overflow-y: auto"
+      >
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 5%">Nomor</th>
+              <th style="width: 15%">Nama Akun</th>
+              <th style="width: 20%">Tanggal Komentar</th>
+              <th style="width: 60%">Komentar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for comment in comments %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ comment.author }}</td>
+              <td>{{ comment.date }}</td>
+              <td>{{ comment.text }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
